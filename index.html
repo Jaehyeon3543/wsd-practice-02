@@ -230,6 +230,7 @@
       </select>
       <button class="btn" onclick="applySearch()">조회</button>
     </div>
+    <p>커서 모드는 ID 내림차순 (id DESC)으로 정렬됩니다. 이는 고정이기에 변경할 수 없습니다.</p>
 
     <div class="table-wrap">
       <table class="data-table">
@@ -311,6 +312,7 @@
     document.getElementById('tabOffset').classList.toggle('active', mode === 'offset');
     document.getElementById('tabCursor').classList.toggle('active', mode === 'cursor');
     document.getElementById('paginationBar').style.display = (mode === 'offset') ? 'flex' : 'none';
+    document.getElementById('sortSelect').disabled = (mode === 'cursor');  // 커서 모드는 정렬 변경 불가
     document.getElementById('cursorMoreWrap').style.display = (mode === 'cursor') ? 'flex' : 'none';
 
     state.page = 1;

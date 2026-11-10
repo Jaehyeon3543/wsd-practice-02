@@ -153,6 +153,7 @@ app.get('/api/posts/cursor', (req, res) => {
       nextCursor,
       limit,
       search,
+      order: 'id DESC',  // 
       hasNext,
       executionTimeMs: Number(executionTimeMs)
     }
