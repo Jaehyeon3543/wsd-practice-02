@@ -49,7 +49,7 @@ const POSTS = Array.from({ length: 1000 }, (_, i) => {
     content: `게시글 ${id}번의 상세 본문 데이터입니다. DB 인덱스와 페이징 최적화를 실습합니다.`,
     author,
     views,
-    createdAt: `2026-${(10 - Math.floor(i / 150)).toString().padStart(2, '0')}-${((i % 28) + 1).toString().padStart(2, '0')}`
+    createdAt: `2026-${(10 - Math.floor(i / 150)).toString().padStart(2, '0')}-${(30 - Math.floor((i % 150) / 5)).toString().padStart(2, '0')}`
   };
 });
 
