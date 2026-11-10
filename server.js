@@ -73,7 +73,7 @@ app.get('/api/posts', (req, res) => {
   const page = (!isNaN(rawPage) && rawPage > 0) ? rawPage : 1;
   const limit = (!isNaN(rawLimit) && rawLimit > 0) ? Math.min(rawLimit, 100) : 10;
   const search = (req.query.search || '').trim().toLowerCase();
-  const sortKey = req.query.sort || 'latest';
+  const sortKey = SORT_WHITELIST[req.query.sort] ? req.query.sort : 'latest';
 
   // 1) 검색 필터링 (WHERE title LIKE '%search%')
   let filtered = POSTS.filter(p => {
@@ -82,7 +82,7 @@ app.get('/api/posts', (req, res) => {
   });
 
   // 2) 화이트리스트 정렬 (ORDER BY ...)
-  const sortComparator = SORT_WHITELIST[sortKey] || SORT_WHITELIST.latest;
+  const sortComparator = SORT_WHITELIST[sortKey];
   filtered.sort(sortComparator);
 
   // 3) 오프셋 계산 및 데이터 슬라이싱
@@ -105,7 +105,8 @@ app.get('/api/posts', (req, res) => {
       totalPages,
       hasNext: safePage < totalPages,
       hasPrev: safePage > 1,
-      executionTimeMs: Number(executionTimeMs)
+      executionTimeMs: Number(executionTimeMs),
+      sort: sortKey
     }
   });
 });
