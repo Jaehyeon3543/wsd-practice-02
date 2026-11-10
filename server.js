@@ -118,14 +118,23 @@ app.get('/api/posts', (req, res) => {
 app.get('/api/posts/cursor', (req, res) => {
   const startTime = process.hrtime();
 
-  const rawCursor = parseInt(req.query.cursor, 10);
-  const limit = Math.min(Math.max(1, parseInt(req.query.limit, 10) || 10), 50);
+  const rawCursor = parseInt(req.query.cursor, 10); // cursor 
+  const limit = Math.min(Math.max(1, parseInt(req.query.limit, 10) || 10), 50);  // limit 방어: 1~50
+  const search = (req.query.search || '').trim().toLowerCase();  // search 필터링 (오프셋에서 참고.)
 
-  // 커서가 있으면 해당 id보다 작은 항목들만 탐색 (WHERE id < ? ORDER BY id DESC)
-  let candidate = POSTS;
+  // 기존에 offset에서 존재하는 내용 재사용 및 참고
+  let candidate = POSTS.filter(p => {
+    if (!search) return true;
+    return p.title.toLowerCase().includes(search) || p.content.toLowerCase().includes(search);
+  });
+
+  // 기존에 있던 candidate적용 함수를 빼서 적용.
   if (!isNaN(rawCursor) && rawCursor > 0) {
-    candidate = POSTS.filter(p => p.id < rawCursor);
+    // cursor 이후의 데이터만 필터링 (id DESC 기준)
+    candidate = candidate.filter(p => p.id < rawCursor);
   }
+
+  candidate.sort((a, b) => b.id - a.id); // id DESC 정렬
 
   // limit + 1개를 조회하여 다음 데이터 존재 여부(hasNext) 판단 (COUNT(*) 제거)
   const sliced = candidate.slice(0, limit + 1);
