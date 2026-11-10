@@ -152,6 +152,7 @@ app.get('/api/posts/cursor', (req, res) => {
       cursor: rawCursor || null,
       nextCursor,
       limit,
+      serach,
       hasNext,
       executionTimeMs: Number(executionTimeMs)
     }
